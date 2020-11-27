@@ -129,8 +129,6 @@ SELECT  sport_activities.first_name,
     ON sport_activities.id = frequencies.sport_activities_id;
 
 
-
-
 -- Complex queries
 
 
@@ -201,3 +199,44 @@ SELECT  s.first_name,
                   (SELECT AVG(age)
                     FROM sport_activities)
     ORDER BY age DESC;  
+
+
+SELECT s.first_name, 
+        s.age, 
+        s.happiness_code,
+        h.meaning,
+        f.duration_min
+    FROM sport_activities AS s
+    INNER JOIN happiness_rate AS h
+    ON s.happiness_code = h.happiness_code
+    LEFT OUTER JOIN frequencies AS f
+    ON s.id = f.sport_activities_id;
+
+
+SELECT s.activity,
+	    f.id,
+	    AVG(f.weekly),
+	    AVG(f.duration_min)
+    FROM sport_activities AS s
+    INNER JOIN frequencies AS f
+    ON s.id = f.sport_activities_id
+    GROUP BY s.activity,
+	    f.id
+    ORDER BY s.activity;
+
+
+SELECT s.activity,
+	    f.id,
+	    AVG(f.weekly),
+	    AVG(f.duration_min)
+    FROM sport_activities AS s
+    INNER JOIN frequencies AS f
+    ON s.id = f.sport_activities_id
+    GROUP BY s.activity,
+	    s.age,
+	    f.id
+    HAVING AVG(f.weekly) > 2
+    AND AVG(f.duration_min) > 15
+    ORDER BY f.id ASC;
+
+    
