@@ -239,4 +239,48 @@ SELECT s.activity,
     AND AVG(f.duration_min) > 15
     ORDER BY f.id ASC;
 
-    
+
+SELECT *
+    FROM sport_activities
+    WHERE age = '24'
+    AND activity = 'running'
+UNION                                       -- UNION result sets
+    SELECT *
+    FROM sport_activities
+    WHERE age = '24'
+    AND activity = 'jumping'
+    ORDER BY happiness_code;   
+
+
+WITH sporty AS (                            -- using CTE
+    SELECT s.id,
+	    s.first_name,
+	    s.activity,
+	    f.weekly,
+	    f.duration_min
+    FROM sport_activities AS s
+    INNER JOIN frequencies f
+    ON s.id = f.sport_activities_id
+    WHERE f.weekly > 2 )
+SELECT id, first_name
+FROM sporty
+ORDER BY id ASC;
+
+
+WITH AvgDuration AS (
+	SELECT sport_activities_id AS personal_id,
+		AVG(duration_min) AS avg_duration
+	FROM frequencies
+	GROUP BY personal_id)
+SELECT s.first_name,
+	s.activity,
+	f.weekly,
+	f.duration_min
+FROM frequencies AS f
+INNER JOIN sport_activities AS s
+ON s.id = f.sport_activities_id
+	INNER JOIN AvgDuration AS avg
+ON f.sport_activities_id = avg.personal_id
+WHERE f.duration_min > avg.avg_duration;
+
+
